@@ -15,18 +15,15 @@ jobs:
         with:
           submodules: true
       - name: Configure
-        working-directory: build
-        run: cmake -DCMAKE_BUILD_TYPE=Release ..
+        run: cmake -DCMAKE_BUILD_TYPE=Release .
       - name: Compile
-        working-directory: build
         run: cmake --build . --config Release -j 2
       - name: Package
-        working-directory: build
         run: cmake --build . --config Release --target package
       - name: Release
         uses: softprops/action-gh-release@v1
         if: contains(github.ref, 'tags/v')
         with:
-          files: build/*.deb
+          files: *.deb
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
