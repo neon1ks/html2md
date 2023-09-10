@@ -1,0 +1,32 @@
+name: 'GitHub Release Actions'
+
+on:
+  push:
+    branches:
+      - main
+      - feature/github_actions
+
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: true
+      - name: Configure
+        working-directory: build
+        run: cmake -DCMAKE_BUILD_TYPE=Release ..
+      - name: Compile
+        working-directory: build
+        run: cmake --build . --config Release -j 2
+      - name: Package
+        working-directory: build
+        run: cmake --build . --config Release --target package
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        if: contains(github.ref, 'tags/v')
+        with:
+          files: build/*.deb
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
