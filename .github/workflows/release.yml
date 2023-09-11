@@ -4,6 +4,9 @@ on:
   push:
     tags:
       - "v*.*.*"
+    branches:
+      - master
+      - feature/github_actions
 
 jobs:
   build:
